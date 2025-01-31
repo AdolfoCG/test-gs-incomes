@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.adolfo.test.gs.incomes.dto.IncomesDto;
 import com.adolfo.test.gs.incomes.service.IncomesService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/movimientos")
 public class IncomesController {
@@ -17,7 +19,7 @@ public class IncomesController {
     private IncomesService incomesService;
 
     @PostMapping("/ingresos")
-    public ResponseEntity<?> newIncome(@RequestBody IncomesDto incomes) {
+    public ResponseEntity<?> newIncome(@Valid @RequestBody IncomesDto incomes) {
         return incomesService.newIncome(incomes);
     }
 }
