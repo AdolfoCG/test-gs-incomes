@@ -8,13 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "empleado")
 @Getter
 @Setter
-@ToString
 public class Empleado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +21,7 @@ public class Empleado {
     private String nombre;
     
     @Column(unique = true)
-    private int telefono;
+    private Long telefono;
 
     @Column(name = "saldo_actual")
     private float saldoActual;
