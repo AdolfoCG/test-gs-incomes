@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,8 @@ import com.adolfo.test.gs.incomes.dto.IncomesDto;
 import com.adolfo.test.gs.incomes.entities.Empleado;
 import com.adolfo.test.gs.incomes.entities.LimiteCaja;
 import com.adolfo.test.gs.incomes.entities.Movimiento;
+import com.adolfo.test.gs.incomes.exception.ForbiddenException;
+import com.adolfo.test.gs.incomes.exception.NotFoundException;
 import com.adolfo.test.gs.incomes.repositories.EmpleadoRepository;
 import com.adolfo.test.gs.incomes.repositories.LimiteCajaRepository;
 import com.adolfo.test.gs.incomes.repositories.MovimientoRepository;
@@ -31,7 +35,7 @@ public class IncomesServiceImpl implements IncomesService {
 
     @Override
     @Transactional
-    public Optional<Movimiento> newIncome(IncomesDto income) {
+    public ResponseEntity<?> newIncome(IncomesDto income) {
         Optional<Empleado> optionalEmpleado = empleadoRepository.findByNombre(income.getEmpleado());
         Movimiento ingreso = new Movimiento();
 
@@ -52,12 +56,16 @@ public class IncomesServiceImpl implements IncomesService {
                     empleado.setSaldoActual(cuenta);
                     empleadoRepository.save(empleado);
 
-                    return Optional.of(movimientoRepository.save(ingreso));
+                    return ResponseEntity.status(HttpStatus.CREATED).body(movimientoRepository.save(ingreso));
+                } else {
+                    throw new ForbiddenException("¡El empleado no puede recibir más ingresos sin antes realizar un corte!");
                 }
             }
+        } else {
+            throw new NotFoundException("¡El empleado no existe!");
         }
-        
-        return Optional.of(ingreso);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private float limiteEmpleadoFunc(Empleado empleado) {
@@ -66,6 +74,8 @@ public class IncomesServiceImpl implements IncomesService {
             
             if (limiteCaja.isPresent()) {
                 limiteEmpleado = limiteCaja.get().getMontoMaximo();
+            } else {
+                throw new NotFoundException("¡El limite de caja del empleado no existe!");
             }
 
         return limiteEmpleado;
