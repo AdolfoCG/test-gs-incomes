@@ -19,4 +19,9 @@ public class EmpleadosController {
     public ResponseEntity<?> saldo(@PathVariable(name = "id") Long id) {
         return empleadosService.saldo(id);
     }
+
+    @GetMapping("/{id}/historial")
+    public ResponseEntity<?> history(@PathVariable(name = "id") Long id) {
+        return empleadosService.history(id);
+    }
 }
