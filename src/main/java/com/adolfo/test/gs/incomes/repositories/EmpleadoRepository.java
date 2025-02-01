@@ -1,5 +1,6 @@
 package com.adolfo.test.gs.incomes.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import com.adolfo.test.gs.incomes.entities.Empleado;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long>{
     @Query("select e from Empleado e where e.nombre=?1")
     Optional<Empleado> findByNombre(String nombre);
+
+    List<Empleado> findAllById(Long id);
 }
