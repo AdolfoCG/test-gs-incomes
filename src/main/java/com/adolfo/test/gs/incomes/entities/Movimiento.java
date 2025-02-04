@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,12 @@ public class Movimiento {
     @ManyToOne
     @JoinColumn(name = "id_empleado")
     private Empleado empleado;
+
+    private Long counter;
+
+    @PostPersist
+    public void counter() {
+        this.counter = this.id;
+    }
+    
 }
